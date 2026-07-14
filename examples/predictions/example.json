@@ -1,0 +1,17 @@
+{
+  "caseId": "sample-blog-a11y-001",
+  "issues": [
+    {
+      "issueId": "search-input-name",
+      "category": "accessibility",
+      "severity": "medium",
+      "confidence": 0.96,
+      "locations": [
+        { "path": "app/search.tsx", "startLine": 31, "endLine": 31 }
+      ],
+      "title": "Search input has no accessible name",
+      "explanation": "The input is missing a label or aria-label.",
+      "suggestedFix": "Associate a visible label with the input."
+    }
+  ]
+}

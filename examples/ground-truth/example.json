@@ -1,0 +1,17 @@
+{
+  "caseId": "sample-blog-a11y-001",
+  "issues": [
+    {
+      "issueId": "search-input-name",
+      "category": "accessibility",
+      "severity": "medium",
+      "locations": [
+        { "path": "app/search.tsx", "startLine": 31, "endLine": 31 }
+      ],
+      "title": "Search input has no accessible name",
+      "explanation": "The input has neither an associated label nor an accessible name.",
+      "whyItMatters": "Screen-reader users cannot determine the control's purpose.",
+      "oracle": "An accessibility test cannot find a textbox named Search."
+    }
+  ]
+}
