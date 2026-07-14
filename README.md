@@ -20,6 +20,10 @@ This repository contains the first vertical slice:
 - a candidate-source catalog and an intake checklist;
 - a typed source registry for repositories, template indexes, and
   generation-seed datasets;
+- a governed discovery registry spanning curated indexes, GitHub-scale
+  discovery, visual references, and research archives;
+- a normalized project record shared by curated, wild, visual, and
+  generation-seed corpus subsets;
 - deterministic family expansion that prevents clean/duplicate/mutated split
   leakage;
 - tests for the scorer and example input files.
@@ -61,7 +65,8 @@ tests/          Deterministic scorer tests
 
 Read [docs/methodology.md](docs/methodology.md) before proposing a source or
 mutation. The source classes and seed-to-case pipeline are documented in
-[docs/sources.md](docs/sources.md).
+[docs/sources.md](docs/sources.md). The expanded collection strategy is in
+[docs/corpus-design.md](docs/corpus-design.md).
 
 ## Non-goals for the first milestone
 
