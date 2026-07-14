@@ -1,0 +1,27 @@
+{
+  "schemaVersion": "1.0",
+  "runId": "qwen3-baseline-001",
+  "benchmarkVersion": "0.1.0",
+  "benchmarkCommit": "0123456789abcdef0123456789abcdef01234567",
+  "model": {
+    "id": "Qwen/Qwen3-1.7B",
+    "revision": "main",
+    "quantization": null
+  },
+  "agent": {
+    "id": "riven-qa",
+    "revision": "v1",
+    "systemPromptHash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "harness": {
+    "revision": "v1",
+    "executorImageDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+  },
+  "sampling": {
+    "temperature": 0,
+    "topP": 1,
+    "seed": 7331,
+    "attemptsPerCase": 1
+  },
+  "startedAt": "2026-07-14T11:30:00+03:00"
+}

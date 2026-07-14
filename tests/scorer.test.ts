@@ -34,7 +34,7 @@ describe("score", () => {
       caseId: truth.caseId,
       issues: [
         {
-          issueId: "missing-effect-dependency",
+          findingId: "finding-1",
           category: "react",
           severity: "high",
           confidence: 0.91,
@@ -43,7 +43,7 @@ describe("score", () => {
           explanation: "The effect can observe stale query state.",
         },
         {
-          issueId: "invented-finding",
+          findingId: "finding-2",
           category: "security",
           severity: "critical",
           confidence: 0.2,
@@ -65,7 +65,27 @@ describe("score", () => {
       severityAccuracy: 0,
       fileLocalizationAccuracy: 1,
       lineLocalizationAccuracy: 1,
+      confidenceBrierScore: 0.02405,
     });
+  });
+
+  it("does not expose hidden ground-truth ids to predictions", () => {
+    const predictions: PredictionDocument = {
+      caseId: truth.caseId,
+      issues: [
+        {
+          findingId: "agent-local-id",
+          category: "accessibility",
+          severity: "low",
+          confidence: 1,
+          locations: [{ path: "app/search.tsx", startLine: 31, endLine: 31 }],
+          title: "Missing accessible name",
+          explanation: "The textbox has no associated label.",
+        },
+      ],
+    };
+
+    expect(score(truth, predictions).truePositives).toBe(1);
   });
 
   it("rejects scoring documents for different cases", () => {
