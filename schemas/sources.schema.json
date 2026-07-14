@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://open-next-bench.dev/schemas/sources.schema.json",
+  "title": "Open Next Bench source registry",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["sources"],
+  "properties": {
+    "sources": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "kind", "url", "status", "license", "notes"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$" },
+          "kind": {
+            "enum": [
+              "discovery-index",
+              "template-index",
+              "repository-collection",
+              "repository",
+              "generation-seeds"
+            ]
+          },
+          "url": { "type": "string", "format": "uri" },
+          "status": {
+            "enum": ["discovery-only", "proposed", "accepted", "rejected"]
+          },
+          "license": { "type": "string", "minLength": 1 },
+          "revision": { "type": "string", "pattern": "^[a-f0-9]{40}$" },
+          "artifact": { "type": "string", "minLength": 1 },
+          "artifactBytes": { "type": "integer", "minimum": 1 },
+          "rowCount": { "type": "integer", "minimum": 1 },
+          "columns": {
+            "type": "array",
+            "items": { "type": "string", "minLength": 1 },
+            "uniqueItems": true
+          },
+          "notes": {
+            "type": "array",
+            "items": { "type": "string", "minLength": 1 }
+          }
+        }
+      }
+    }
+  }
+}

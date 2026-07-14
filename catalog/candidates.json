@@ -1,0 +1,51 @@
+{
+  "$schema": "../schemas/candidates.schema.json",
+  "candidates": [
+    {
+      "id": "riven-sample-blog",
+      "repository": "https://github.com/riven-ai/sample-blog",
+      "status": "proposed",
+      "reason": "Small known-buildable App Router baseline referenced by Riven's app-builder milestone.",
+      "reviewNotes": [
+        "Confirm the public repository license and pin an immutable commit.",
+        "Useful as a harness smoke fixture, not representative of production complexity."
+      ]
+    },
+    {
+      "id": "calcom",
+      "repository": "https://github.com/calcom/cal.com",
+      "status": "proposed",
+      "reason": "Large production TypeScript application with routing, APIs, authentication, and UI complexity.",
+      "reviewNotes": [
+        "Verify current license, fixture size, build isolation, and required services."
+      ]
+    },
+    {
+      "id": "formbricks",
+      "repository": "https://github.com/formbricks/formbricks",
+      "status": "proposed",
+      "reason": "Production SaaS application with substantial forms, state, authorization, and accessibility surfaces.",
+      "reviewNotes": [
+        "Verify current license and select a tractable app/package boundary."
+      ]
+    },
+    {
+      "id": "documenso",
+      "repository": "https://github.com/documenso/documenso",
+      "status": "proposed",
+      "reason": "Production document workflow with authentication, server code, and rich UI behavior.",
+      "reviewNotes": [
+        "Verify current license, build dependencies, and safe sample data."
+      ]
+    },
+    {
+      "id": "dub",
+      "repository": "https://github.com/dubinc/dub",
+      "status": "proposed",
+      "reason": "Modern production Next.js application with broad routing, data, and performance surfaces.",
+      "reviewNotes": [
+        "Verify current license and whether redistribution is compatible with benchmark packaging."
+      ]
+    }
+  ]
+}

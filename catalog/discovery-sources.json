@@ -1,0 +1,333 @@
+{
+  "$schema": "../schemas/discovery-sources.schema.json",
+  "sources": [
+    {
+      "id": "vercel-templates",
+      "label": "Vercel Next.js Templates",
+      "url": "https://vercel.com/templates/next.js",
+      "tier": 1,
+      "role": "template-index",
+      "accessPolicy": "resolve-public-repositories",
+      "expectedYield": "high",
+      "notes": [
+        "Resolve each listing to a canonical repository and review its license independently."
+      ]
+    },
+    {
+      "id": "github-topic-template",
+      "label": "GitHub topic: nextjs-template",
+      "url": "https://github.com/topics/nextjs-template",
+      "tier": 1,
+      "role": "repository-discovery",
+      "accessPolicy": "metadata-and-public-repositories",
+      "expectedYield": "high",
+      "notes": [
+        "Topic membership is a discovery signal, not proof that a project uses Next.js."
+      ]
+    },
+    {
+      "id": "github-topic-starter",
+      "label": "GitHub topic: nextjs-starter",
+      "url": "https://github.com/topics/nextjs-starter",
+      "tier": 1,
+      "role": "repository-discovery",
+      "accessPolicy": "metadata-and-public-repositories",
+      "expectedYield": "high",
+      "notes": ["Verify package manifests and deduplicate forks before intake."]
+    },
+    {
+      "id": "github-topic-boilerplate",
+      "label": "GitHub topic: nextjs-boilerplate",
+      "url": "https://github.com/topics/nextjs-boilerplate",
+      "tier": 1,
+      "role": "repository-discovery",
+      "accessPolicy": "metadata-and-public-repositories",
+      "expectedYield": "high",
+      "notes": [
+        "Useful for production-oriented foundations; template forks require clustering."
+      ]
+    },
+    {
+      "id": "starterindex-nextjs",
+      "label": "StarterIndex Next.js boilerplates",
+      "url": "https://starterindex.com/github%2Bnextjs-boilerplates",
+      "tier": 1,
+      "role": "template-index",
+      "accessPolicy": "resolve-public-repositories",
+      "expectedYield": "medium",
+      "notes": [
+        "Treat indexed counts as discovery estimates until canonical repositories are resolved."
+      ]
+    },
+    {
+      "id": "nextjstemplates",
+      "label": "Next.js Templates",
+      "url": "https://nextjstemplates.com/",
+      "tier": 1,
+      "role": "template-index",
+      "accessPolicy": "free-public-source-only",
+      "expectedYield": "medium",
+      "notes": [
+        "Mixed free and paid catalog; never ingest paid source without explicit rights."
+      ]
+    },
+    {
+      "id": "netlify-nextjs",
+      "label": "Netlify Next.js",
+      "url": "https://www.netlify.com/with/nextjs/",
+      "tier": 1,
+      "role": "template-index",
+      "accessPolicy": "resolve-public-repositories",
+      "expectedYield": "medium",
+      "notes": [
+        "Useful for deployment-adapter and platform integration coverage."
+      ]
+    },
+    {
+      "id": "awesome-nextjs-bytefer",
+      "label": "Awesome Next.js by bytefer",
+      "url": "https://github.com/bytefer/awesome-nextjs",
+      "tier": 1,
+      "role": "curated-index",
+      "accessPolicy": "resolve-public-repositories",
+      "expectedYield": "medium",
+      "notes": ["Curated source for projects, starters, tools, and examples."]
+    },
+    {
+      "id": "awesome-nextjs-unicodeveloper",
+      "label": "Awesome Next.js by unicodeveloper",
+      "url": "https://github.com/unicodeveloper/awesome-nextjs",
+      "tier": 1,
+      "role": "curated-index",
+      "accessPolicy": "resolve-public-repositories",
+      "expectedYield": "low",
+      "notes": [
+        "Older projects are valuable for Pages Router and historical-version coverage."
+      ]
+    },
+    {
+      "id": "vercel-nextjs-examples",
+      "label": "Official Next.js examples",
+      "url": "https://github.com/vercel/next.js/tree/canary/examples",
+      "tier": 1,
+      "role": "repository-collection",
+      "accessPolicy": "pin-and-materialize-subdirectories",
+      "expectedYield": "high",
+      "notes": [
+        "Technically broad but educational; preserve parent commit and example path."
+      ]
+    },
+    {
+      "id": "vercel-platforms",
+      "label": "Platforms Starter Kit",
+      "url": "https://github.com/vercel/platforms",
+      "tier": 1,
+      "role": "direct-repository",
+      "accessPolicy": "license-review-required",
+      "expectedYield": "low",
+      "notes": ["High-value multi-tenant and domain-routing family."]
+    },
+    {
+      "id": "vercel-commerce",
+      "label": "Next.js Commerce",
+      "url": "https://github.com/vercel/commerce",
+      "tier": 1,
+      "role": "direct-repository",
+      "accessPolicy": "license-review-required",
+      "expectedYield": "low",
+      "notes": [
+        "Large production-style family with external service requirements."
+      ]
+    },
+    {
+      "id": "nextjsstarter-directory",
+      "label": "Next.js Starter",
+      "url": "https://nextjsstarter.com/",
+      "tier": 2,
+      "role": "template-index",
+      "accessPolicy": "metadata-and-free-public-links",
+      "expectedYield": "medium",
+      "notes": []
+    },
+    {
+      "id": "batchtool-nextjs",
+      "label": "Next.js Batchtool Directory",
+      "url": "https://nextjs.batchtool.com/",
+      "tier": 2,
+      "role": "template-index",
+      "accessPolicy": "metadata-and-free-public-links",
+      "expectedYield": "medium",
+      "notes": []
+    },
+    {
+      "id": "boilerplatelist",
+      "label": "Boilerplate List",
+      "url": "https://boilerplatelist.dev/",
+      "tier": 2,
+      "role": "template-index",
+      "accessPolicy": "metadata-and-free-public-links",
+      "expectedYield": "medium",
+      "notes": []
+    },
+    {
+      "id": "boilerbase",
+      "label": "BoilerBase",
+      "url": "https://boilerbase.dev/",
+      "tier": 2,
+      "role": "template-index",
+      "accessPolicy": "metadata-and-free-public-links",
+      "expectedYield": "medium",
+      "notes": []
+    },
+    {
+      "id": "built-at-lightspeed",
+      "label": "Built at Lightspeed",
+      "url": "https://www.builtatlightspeed.com/",
+      "tier": 2,
+      "role": "template-index",
+      "accessPolicy": "metadata-and-free-public-links",
+      "expectedYield": "medium",
+      "notes": []
+    },
+    {
+      "id": "codesandbox-templates",
+      "label": "CodeSandbox Templates",
+      "url": "https://codesandbox.io/templates",
+      "tier": 2,
+      "role": "sandbox-index",
+      "accessPolicy": "metadata-and-exportable-public-projects",
+      "expectedYield": "medium",
+      "notes": [
+        "Require export provenance and a reproducible repository snapshot."
+      ]
+    },
+    {
+      "id": "stackblitz",
+      "label": "StackBlitz",
+      "url": "https://stackblitz.com/",
+      "tier": 2,
+      "role": "sandbox-index",
+      "accessPolicy": "metadata-and-exportable-public-projects",
+      "expectedYield": "medium",
+      "notes": [
+        "Require export provenance and a reproducible repository snapshot."
+      ]
+    },
+    {
+      "id": "themeforest-nextjs",
+      "label": "ThemeForest Next.js templates",
+      "url": "https://themeforest.net/category/site-templates?term=nextjs",
+      "tier": 2,
+      "role": "commercial-gallery",
+      "accessPolicy": "metadata-only",
+      "expectedYield": "none",
+      "notes": [
+        "Do not ingest source code without separately obtained redistribution and dataset rights."
+      ]
+    },
+    {
+      "id": "creative-tim-nextjs",
+      "label": "Creative Tim Next.js templates",
+      "url": "https://www.creative-tim.com/templates/nextjs",
+      "tier": 2,
+      "role": "commercial-gallery",
+      "accessPolicy": "metadata-and-explicitly-licensed-free-source",
+      "expectedYield": "low",
+      "notes": [
+        "License-review each free repository; paid listings remain metadata-only."
+      ]
+    },
+    {
+      "id": "nextjs-showcase",
+      "label": "Next.js Showcase",
+      "url": "https://nextjs.org/showcase",
+      "tier": 3,
+      "role": "visual-discovery",
+      "accessPolicy": "metadata-only",
+      "expectedYield": "none",
+      "notes": [
+        "Use for taxonomy and visual references, not as a source-code corpus."
+      ]
+    },
+    {
+      "id": "made-with-nextjs",
+      "label": "Made with Next.js",
+      "url": "https://madewithnextjs.com/",
+      "tier": 3,
+      "role": "visual-discovery",
+      "accessPolicy": "metadata-only",
+      "expectedYield": "none",
+      "notes": []
+    },
+    {
+      "id": "awwwards-nextjs",
+      "label": "Awwwards Next.js sites",
+      "url": "https://www.awwwards.com/websites/next-js/",
+      "tier": 3,
+      "role": "visual-discovery",
+      "accessPolicy": "metadata-only",
+      "expectedYield": "none",
+      "notes": []
+    },
+    {
+      "id": "ecosystems",
+      "label": "Ecosyste.ms",
+      "url": "https://ecosyste.ms/",
+      "tier": 4,
+      "role": "bulk-repository-discovery",
+      "accessPolicy": "api-metadata-then-fetch-origin",
+      "expectedYield": "very-high",
+      "notes": [
+        "Use dependency, license, activity, and repository metadata to reduce GitHub search dependence."
+      ]
+    },
+    {
+      "id": "github-search",
+      "label": "GitHub repository and code search",
+      "url": "https://docs.github.com/en/search-github/github-code-search/about-github-code-search",
+      "tier": 4,
+      "role": "bulk-repository-discovery",
+      "accessPolicy": "api-metadata-and-public-repositories",
+      "expectedYield": "very-high",
+      "notes": [
+        "Partition searches by date, stars, and topics; verify manifests after discovery."
+      ]
+    },
+    {
+      "id": "software-heritage-graph",
+      "label": "Software Heritage Graph Dataset",
+      "url": "https://docs.softwareheritage.org/devel/swh-export/graph/index.html",
+      "tier": 4,
+      "role": "research-scale-archive",
+      "accessPolicy": "terms-and-ethical-charter-review",
+      "expectedYield": "very-high",
+      "notes": [
+        "Useful for origins, snapshots, commits, directories, and deduplicated contents."
+      ]
+    },
+    {
+      "id": "gh-archive",
+      "label": "GH Archive",
+      "url": "https://www.gharchive.org/",
+      "tier": 4,
+      "role": "activity-discovery",
+      "accessPolicy": "event-metadata-then-fetch-origin",
+      "expectedYield": "very-high",
+      "notes": [
+        "Contains events rather than complete repositories; use it to discover active origins."
+      ]
+    },
+    {
+      "id": "tesslate-nextjs-dataset",
+      "label": "Tesslate Next.js Dataset",
+      "url": "https://huggingface.co/datasets/Tesslate/Next.js-Dataset",
+      "tier": 4,
+      "role": "generation-seeds",
+      "accessPolicy": "pinned-parquet",
+      "expectedYield": "high",
+      "notes": [
+        "Rows must be materialized and validated before becoming projects."
+      ]
+    }
+  ]
+}

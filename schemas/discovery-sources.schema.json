@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://open-next-bench.dev/schemas/discovery-sources.schema.json",
+  "title": "Open Next Bench discovery source registry",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["sources"],
+  "properties": {
+    "sources": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "label",
+          "url",
+          "tier",
+          "role",
+          "accessPolicy",
+          "expectedYield",
+          "notes"
+        ],
+        "properties": {
+          "id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$" },
+          "label": { "type": "string", "minLength": 1 },
+          "url": { "type": "string", "format": "uri" },
+          "tier": { "type": "integer", "minimum": 1, "maximum": 4 },
+          "role": { "type": "string", "minLength": 1 },
+          "accessPolicy": { "type": "string", "minLength": 1 },
+          "expectedYield": {
+            "enum": ["none", "low", "medium", "high", "very-high"]
+          },
+          "notes": {
+            "type": "array",
+            "items": { "type": "string", "minLength": 1 }
+          }
+        }
+      }
+    }
+  }
+}
