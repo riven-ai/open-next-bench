@@ -17,6 +17,10 @@ separately governed holdout set. Results must identify the model, agent version,
 prompts/policies, tool permissions, token budget, wall-clock budget, and number
 of attempts.
 
+All controls, exact duplicates, and mutations derived from the same project
+carry one `familyId`. Dataset splits are assigned from that family ID,
+preventing near-duplicate leakage across train, validation, and test.
+
 ### Variant zero matters
 
 The unchanged repository measures false positives. It is not assumed to be

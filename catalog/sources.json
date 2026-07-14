@@ -1,0 +1,95 @@
+{
+  "$schema": "../schemas/sources.schema.json",
+  "sources": [
+    {
+      "id": "nextjs-showcase",
+      "kind": "discovery-index",
+      "url": "https://nextjs.org/showcase",
+      "status": "discovery-only",
+      "license": "mixed-or-unknown",
+      "notes": [
+        "The showcase proves that a site uses Next.js but does not imply that its source is public.",
+        "Follow only entries that resolve to an independently licensed source repository or template."
+      ]
+    },
+    {
+      "id": "vercel-nextjs-templates",
+      "kind": "template-index",
+      "url": "https://vercel.com/templates/next.js",
+      "status": "proposed",
+      "license": "per-template",
+      "notes": [
+        "High-value source for runnable starters across auth, commerce, CMS, databases, routers, and UI systems.",
+        "Pin and license-review every linked repository independently; the index itself is not a redistribution license."
+      ]
+    },
+    {
+      "id": "tesslate-nextjs-dataset",
+      "kind": "generation-seeds",
+      "url": "https://huggingface.co/datasets/Tesslate/Next.js-Dataset",
+      "status": "proposed",
+      "license": "Apache-2.0",
+      "revision": "15ec91a4dc49bc8a52064db10d85da33c83d1e8e",
+      "artifact": "nextjs_transformed.parquet",
+      "artifactBytes": 292900000,
+      "rowCount": 49954,
+      "columns": ["question", "response", "reasoning"],
+      "notes": [
+        "Rows are instruction/response/reasoning text, not runnable repositories.",
+        "Dataset Viewer is unavailable; ingestion reads the pinned Parquet artifact directly.",
+        "Generated code may be incorrect or version-mixed and must pass materialization, build, license, and secret review before fixture use."
+      ]
+    },
+    {
+      "id": "vercel-nextjs-examples",
+      "kind": "repository-collection",
+      "url": "https://github.com/vercel/next.js/tree/canary/examples",
+      "status": "proposed",
+      "license": "MIT",
+      "notes": [
+        "Broad framework-feature coverage, but examples are educational rather than production applications.",
+        "Pin the parent next.js commit and preserve each example's relative path."
+      ]
+    },
+    {
+      "id": "vercel-app-router-playground",
+      "kind": "repository",
+      "url": "https://github.com/vercel/app-playground",
+      "status": "proposed",
+      "license": "review-required",
+      "notes": [
+        "Useful concentrated App Router and React Server Component coverage."
+      ]
+    },
+    {
+      "id": "vercel-commerce",
+      "kind": "repository",
+      "url": "https://github.com/vercel/commerce",
+      "status": "proposed",
+      "license": "review-required",
+      "notes": [
+        "Production-style commerce surface; requires external-service isolation."
+      ]
+    },
+    {
+      "id": "nextjs-saas-starter",
+      "kind": "repository",
+      "url": "https://github.com/nextjs/saas-starter",
+      "status": "proposed",
+      "license": "review-required",
+      "notes": [
+        "Auth, database, payments, and dashboard flows in a compact starter."
+      ]
+    },
+    {
+      "id": "vercel-platforms",
+      "kind": "repository",
+      "url": "https://github.com/vercel/platforms",
+      "status": "proposed",
+      "license": "review-required",
+      "notes": [
+        "Multi-tenant routing and domain behavior make useful cross-file cases."
+      ]
+    }
+  ]
+}
