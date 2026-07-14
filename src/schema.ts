@@ -56,7 +56,7 @@ export const predictionDocumentSchema = z.object({
 
 export const splitSchema = z.enum(["train", "validation", "test", "secret"]);
 
-export const benchmarkCaseSchema = z.object({
+export const publicBenchmarkCaseSchema = z.object({
   schemaVersion: z.literal("1.0"),
   caseId: z.string().min(1),
   familyId: z.string().min(1),
@@ -83,11 +83,22 @@ export const benchmarkCaseSchema = z.object({
     kind: z.enum(["control", "mutated"]),
     mutationIds: z.array(z.string().min(1)),
   }),
+});
+
+export const evaluatorCaseSchema = publicBenchmarkCaseSchema.extend({
   oracle: z.object({
     groundTruthPath: z.string().min(1),
     commands: z.array(z.string().min(1)).min(1),
   }),
 });
+
+export const benchmarkCaseSchema = evaluatorCaseSchema;
+
+export const toPublicBenchmarkCase = (
+  benchmarkCase: z.infer<typeof evaluatorCaseSchema>,
+): z.infer<typeof publicBenchmarkCaseSchema> => {
+  return publicBenchmarkCaseSchema.parse(benchmarkCase);
+};
 
 export const runManifestSchema = z.object({
   schemaVersion: z.literal("1.0"),
@@ -119,5 +130,7 @@ export const runManifestSchema = z.object({
 
 export type GroundTruthDocument = z.infer<typeof groundTruthDocumentSchema>;
 export type PredictionDocument = z.infer<typeof predictionDocumentSchema>;
-export type BenchmarkCase = z.infer<typeof benchmarkCaseSchema>;
+export type PublicBenchmarkCase = z.infer<typeof publicBenchmarkCaseSchema>;
+export type EvaluatorCase = z.infer<typeof evaluatorCaseSchema>;
+export type BenchmarkCase = EvaluatorCase;
 export type RunManifest = z.infer<typeof runManifestSchema>;
