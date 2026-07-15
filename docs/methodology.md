@@ -44,11 +44,11 @@ a real issue."
 
 ## Initial matching policy
 
-The foundation scorer uses stable issue IDs. This is appropriate for harness
-validation and controlled agents that emit benchmark IDs, but it is not the
-final open-ended review metric. The next scorer will perform deterministic
-candidate matching using file overlap, line overlap, and taxonomy compatibility,
-with a blinded adjudication queue for ambiguous semantic duplicates.
+Agents assign local finding IDs and never receive hidden ground-truth IDs. The
+v1 scorer performs deterministic one-to-one matching using file and line
+overlap, preferring category and severity agreement when multiple truths
+overlap. A future semantic matcher requires a separately reviewed adjudication
+set and a versioned scorer change.
 
 ## Metrics
 

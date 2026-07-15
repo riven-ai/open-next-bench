@@ -2,7 +2,7 @@
   "caseId": "sample-blog-a11y-001",
   "issues": [
     {
-      "issueId": "search-input-name",
+      "findingId": "finding-1",
       "category": "accessibility",
       "severity": "medium",
       "confidence": 0.96,

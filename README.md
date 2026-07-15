@@ -16,7 +16,7 @@ This repository contains the first vertical slice:
 - versioned schemas for source repositories, benchmark cases, ground truth, and
   agent predictions;
 - a deterministic scorer for exact issue identity, category, severity, and
-  location;
+  location without exposing hidden ground-truth IDs;
 - a candidate-source catalog and an intake checklist;
 - a typed source registry for repositories, template indexes, and
   generation-seed datasets;
@@ -66,7 +66,11 @@ tests/          Deterministic scorer tests
 Read [docs/methodology.md](docs/methodology.md) before proposing a source or
 mutation. The source classes and seed-to-case pipeline are documented in
 [docs/sources.md](docs/sources.md). The expanded collection strategy is in
-[docs/corpus-design.md](docs/corpus-design.md).
+[docs/corpus-design.md](docs/corpus-design.md). Benchmark quality and
+publication gates are defined in
+[docs/benchmark-standard.md](docs/benchmark-standard.md). The cross-suite
+best-practices review and current training-readiness audit are in
+[docs/benchmark-best-practices-report.md](docs/benchmark-best-practices-report.md).
 
 ## Non-goals for the first milestone
 

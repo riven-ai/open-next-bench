@@ -1,0 +1,32 @@
+{
+  "schemaVersion": "1.0",
+  "caseId": "sample-blog-a11y-001",
+  "familyId": "sample-blog-a11y",
+  "split": "validation",
+  "source": {
+    "repository": "riven-ai/sample-blog",
+    "commit": "0123456789abcdef0123456789abcdef01234567",
+    "licenseSpdx": "MIT"
+  },
+  "environment": {
+    "image": "ghcr.io/open-next-bench/sample-blog",
+    "imageDigest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "setupHash": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "networkAccess": false
+  },
+  "task": {
+    "prompt": "Inspect this repository and report every in-scope defect.",
+    "allowedTools": ["read_file", "search", "run_tests"],
+    "maxSteps": 30,
+    "maxTokens": 16000,
+    "timeoutSeconds": 900
+  },
+  "variant": {
+    "kind": "mutated",
+    "mutationIds": ["a11y-search-input-name"]
+  },
+  "oracle": {
+    "groundTruthPath": "ground-truth/sample-blog-a11y-001.json",
+    "commands": ["yarn test:oracle --case sample-blog-a11y-001"]
+  }
+}

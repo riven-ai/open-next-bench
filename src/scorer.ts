@@ -11,10 +11,14 @@ export interface Score {
   severityAccuracy: number;
   fileLocalizationAccuracy: number;
   lineLocalizationAccuracy: number;
+  confidenceBrierScore: number;
 }
 
 const divide = (numerator: number, denominator: number): number =>
   denominator === 0 ? 0 : numerator / denominator;
+
+const roundSix = (value: number): number =>
+  Math.round(value * 1_000_000) / 1_000_000;
 
 const rangesOverlap = (
   left: { startLine: number; endLine: number },
@@ -32,22 +36,36 @@ export function score(
     );
   }
 
-  const truthById = new Map(
-    truth.issues.map((issue) => [issue.issueId, issue]),
-  );
   const uniquePredictions = new Map(
-    predictions.issues.map((issue) => [issue.issueId, issue]),
+    predictions.issues.map((issue) => [issue.findingId, issue]),
   );
-  const matches = [...uniquePredictions.entries()].flatMap(
-    ([id, prediction]) => {
-      const expected = truthById.get(id);
-      return expected === undefined ? [] : [{ expected, prediction }];
-    },
-  );
+  const unmatchedTruth = new Set(truth.issues.map((_, index) => index));
+  const matches = [...uniquePredictions.values()].flatMap((prediction) => {
+    const candidates = [...unmatchedTruth].flatMap((index) => {
+      const expected = truth.issues[index];
+      if (expected === undefined) return [];
+      const lineOverlap = prediction.locations.some((actual) =>
+        expected.locations.some(
+          (target) =>
+            actual.path === target.path && rangesOverlap(actual, target),
+        ),
+      );
+      if (!lineOverlap) return [];
+      const rank =
+        Number(expected.category === prediction.category) * 2 +
+        Number(expected.severity === prediction.severity);
+      return [{ expected, index, rank }];
+    });
+    candidates.sort((left, right) => right.rank - left.rank);
+    const best = candidates[0];
+    if (best === undefined) return [];
+    unmatchedTruth.delete(best.index);
+    return [{ expected: best.expected, prediction }];
+  });
 
   const truePositives = matches.length;
   const falsePositives = uniquePredictions.size - truePositives;
-  const falseNegatives = truthById.size - truePositives;
+  const falseNegatives = truth.issues.length - truePositives;
   const precision = divide(truePositives, truePositives + falsePositives);
   const recall = divide(truePositives, truePositives + falseNegatives);
 
@@ -86,5 +104,17 @@ export function score(
     ),
     fileLocalizationAccuracy: divide(fileHits, matches.length),
     lineLocalizationAccuracy: divide(lineHits, matches.length),
+    confidenceBrierScore: roundSix(
+      divide(
+        [...uniquePredictions.values()].reduce((sum, prediction) => {
+          const matched = matches.some(
+            ({ prediction: candidate }) =>
+              candidate.findingId === prediction.findingId,
+          );
+          return sum + (prediction.confidence - Number(matched)) ** 2;
+        }, 0),
+        uniquePredictions.size,
+      ),
+    ),
   };
 }
