@@ -10,6 +10,13 @@ episode that produces a prediction. The integration has three trust zones:
 3. **Verifier-only:** `GroundTruthDocument` and the submitted
    `PredictionDocument`.
 
+Open Next Bench plugs into Riven RL through the generic `SuiteAdapter` contract.
+The benchmark runner owns lifecycle, capability enforcement, budgets,
+transcripts, and versioned result envelopes. This adapter owns only Next.js case
+materialization, its named tools, prediction parsing, and deterministic scoring.
+Browser, coding, math, and QA suites implement the same boundary without
+changing the runner.
+
 The harness must call `toPublicBenchmarkCase` before constructing a prompt or
 episode state. Ground truth, mutation patches, oracle commands, and evaluator
 paths must live outside the agent workspace and must not appear in tool output.

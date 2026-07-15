@@ -26,6 +26,35 @@ Primary references:
 - [BrowserGym](https://github.com/ServiceNow/BrowserGym)
 - [WebVoyager paper](https://arxiv.org/abs/2401.13919)
 
+## Generic suite boundary
+
+Open Next Bench is one capability suite, not the benchmark runner. Riven RL's
+suite-neutral environment contract must also be able to host:
+
+| Suite shape           | Task-specific adapter responsibility                                 | Shared environment responsibility                                 |
+| --------------------- | -------------------------------------------------------------------- | ----------------------------------------------------------------- |
+| GSM8K                 | load question/answer and exact-match parser                          | lifecycle, version identity, result envelope                      |
+| WebArena / WebVoyager | reset site, expose browser actions, deterministic task evaluator     | budgets, capability allowlist, transcript, termination            |
+| SWE-bench             | materialize commit, expose repository/test actions, patch grader     | isolation metadata, budgets, transcript, result envelope          |
+| QA tool-use           | load target and evidence tools, structured QA reward                 | lifecycle, capability allowlist, versioned results                |
+| Open Next Bench       | materialize Next.js case, expose reads/search/checks, finding scorer | lifecycle, capability allowlist, budgets, transcript, termination |
+
+Every adapter implements the same four operations: `reset(task)`,
+`invoke(tool, arguments)`, `evaluate(submission)`, and `close()`. The shared
+episode rejects undeclared tools, enforces the step budget, permits exactly one
+terminal submission, and records a replayable transcript. The result envelope
+always includes `suite`, `suiteVersion`, `environmentVersion`, `caseId`, primary
+score, suite metrics, resource usage, and completion status.
+
+Suite adapters may add observations and metrics but cannot weaken shared
+invariants. Evaluator-only data stays behind the adapter boundary. Tool names
+are capabilities, not executable command strings; raw shell or unrestricted
+network access is never implied by the generic contract.
+
+Environment and scorer versions are independent. A result is comparable only
+when suite version, environment version, scorer version, attempt policy,
+budgets, and scaffold match (or the report explicitly describes the change).
+
 ## Case contract
 
 Every scored case must declare:
@@ -102,8 +131,10 @@ The benchmark is not eligible for a model-quality claim until all gates pass:
 
 ## Current readiness
 
-As of 2026-07-14 the schemas, scorer, source governance, and lineage rules
-exist, but the benchmark has **zero materialized cases**. It is suitable for
-harness development, not yet for training or quality claims. The next milestone
-is a 10-family pilot with control and mutation oracles, followed by a CPU
-baseline before any paid GPU training.
+As of 2026-07-15 the schemas, scorer, source governance, and lineage rules
+exist, but the publishable benchmark has **zero materialized repository cases**.
+Riven RL has a separate 12-case authored pilot for environment and
+training-system smoke tests; those fixtures are not leaderboard cases and do not
+satisfy the corpus gates above. The next corpus milestone is a 10-family
+materialized pilot with control and mutation oracles, followed by CPU baselines
+before any model-quality claim.

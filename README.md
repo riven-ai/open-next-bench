@@ -68,7 +68,9 @@ mutation. The source classes and seed-to-case pipeline are documented in
 [docs/sources.md](docs/sources.md). The expanded collection strategy is in
 [docs/corpus-design.md](docs/corpus-design.md). Benchmark quality and
 publication gates are defined in
-[docs/benchmark-standard.md](docs/benchmark-standard.md).
+[docs/benchmark-standard.md](docs/benchmark-standard.md). The cross-suite
+best-practices review and current training-readiness audit are in
+[docs/benchmark-best-practices-report.md](docs/benchmark-best-practices-report.md).
 
 ## Non-goals for the first milestone
 
