@@ -322,9 +322,10 @@ export interface CorpusFamilyInput {
 }
 
 interface PrivateEvaluationRow {
-  schemaVersion: "repair-evaluator-bundle-1.0";
+  schemaVersion: "repair-evaluator-bundle-1.1";
   case: EvaluatorRepairCase;
   agentWorkspace: Workspace;
+  referenceWorkspace: Workspace;
 }
 
 const buildPrivateEvaluationRows = (
@@ -343,9 +344,10 @@ const buildPrivateEvaluationRows = (
       throw new Error("materialized case order differs from evaluator cases");
     }
     return {
-      schemaVersion: "repair-evaluator-bundle-1.0",
+      schemaVersion: "repair-evaluator-bundle-1.1",
       case: repairCase,
       agentWorkspace: item.agentWorkspace,
+      referenceWorkspace: item.referenceRepair,
     };
   });
 };

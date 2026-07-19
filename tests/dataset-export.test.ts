@@ -95,8 +95,13 @@ describe("repair dataset export", () => {
     expect(instances).not.toContain("referenceRepairPatch");
     expect(instances).not.toContain("mutationPatch");
     expect(instances).not.toContain('"evaluator"');
+    expect(instances).not.toContain("referenceWorkspace");
     expect(privateBundle).toContain("referenceRepairPatch");
     expect(privateBundle).toContain("agentWorkspace");
+    expect(privateBundle).toContain(
+      '"schemaVersion":"repair-evaluator-bundle-1.1"',
+    );
+    expect(privateBundle).toContain("referenceWorkspace");
     expect(card).toContain("Open Next Bench Repair Pilot");
   });
 
