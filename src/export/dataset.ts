@@ -454,6 +454,7 @@ export const exportRepairCorpus = async (
     ),
     writeFile(join(instanceDirectory, "mutations.jsonl"), jsonLines(mutations)),
     writeFile(join(instanceDirectory, "README.md"), card),
+    writeFile(join(instanceDirectory, "MANIFEST.json"), manifestJson),
     writeFile(
       join(trajectoryDataDirectory, "train.jsonl"),
       jsonLines(trajectoriesForSplit(trajectories, "train")),
@@ -463,6 +464,7 @@ export const exportRepairCorpus = async (
       jsonLines(trajectoriesForSplit(trajectories, "validation")),
     ),
     writeFile(join(trajectoryDirectory, "README.md"), card),
+    writeFile(join(trajectoryDirectory, "MANIFEST.json"), manifestJson),
     writeFile(
       join(privateDirectory, "evaluator-cases.jsonl"),
       jsonLines(privateRows),
