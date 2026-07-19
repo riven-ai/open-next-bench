@@ -26,6 +26,8 @@ This repository contains the first vertical slice:
   generation-seed corpus subsets;
 - deterministic family expansion that prevents clean/duplicate/mutated split
   leakage;
+- a 110-case owned repair corpus with executable evaluator-private oracles and
+  deterministic reference/adversarial baseline reports;
 - tests for the scorer and example input files.
 
 No third-party repository is vendored yet. Candidate projects must pass license,
@@ -40,7 +42,17 @@ yarn check
 yarn score \
   --truth examples/ground-truth/example.json \
   --predictions examples/predictions/example.json
+
+yarn baseline:repair \
+  --benchmark-commit "$(git rev-parse HEAD)" \
+  --out artifacts/repair-adversarial-baselines.json
 ```
+
+The repair baseline report contains one canonical scorer result per policy and
+case, aggregate metrics, and machine-readable assertions for the expected score
+bounds. It runs the reference, never-edit, always-edit, delete-feature,
+hardcode-answer, modify-tests, duplicate-spam, oracle-discovery, and
+path-traversal policies over all 110 owned cases.
 
 ## Benchmark unit
 

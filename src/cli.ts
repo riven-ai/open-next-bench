@@ -14,6 +14,10 @@ import {
 import { ownedCorpusFamilies } from "./mutations/owned-corpus.js";
 import { repairScoringInputSchema } from "./repair/schema.js";
 import { scoreRepairEpisode } from "./repair/scorer.js";
+import {
+  runAdversarialBaselineReport,
+  writeAdversarialBaselineReport,
+} from "./baselines/adversarial.js";
 
 async function readJson(path: string): Promise<unknown> {
   return JSON.parse(await readFile(path, "utf8"));
@@ -103,6 +107,33 @@ program
           materializedCases: bundles.length,
           selectedCase: options.case ?? null,
           corpus: executableCorpusSummary(),
+        },
+        null,
+        2,
+      )}\n`,
+    );
+  });
+
+program
+  .command("run-repair-baselines")
+  .description(
+    "Run deterministic reference and adversarial policies over the owned repair corpus",
+  )
+  .requiredOption("--benchmark-commit <sha>")
+  .requiredOption("--out <path>")
+  .action(async (options: { benchmarkCommit: string; out: string }) => {
+    const report = await runAdversarialBaselineReport(options.benchmarkCommit);
+    await writeAdversarialBaselineReport(report, options.out);
+    process.stdout.write(
+      `${JSON.stringify(
+        {
+          outputPath: options.out,
+          schemaVersion: report.schemaVersion,
+          corpus: report.corpus,
+          policyCount: report.policies.length,
+          caseResultCount: report.caseResults.length,
+          aggregates: report.aggregates,
+          proof: report.proof,
         },
         null,
         2,
