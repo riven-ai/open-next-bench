@@ -34,6 +34,7 @@ export const ownedDashboardTemplate: TemplateFamily = {
   licenseSpdx: "Apache-2.0",
   description:
     "A Riven-authored Next.js App Router dashboard fixture with auth, data, forms, images, and route handlers.",
+  split: "train",
   files: {
     "package.json": JSON.stringify(
       {

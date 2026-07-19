@@ -66,16 +66,6 @@ export type TrajectoryRow = z.infer<typeof trajectoryRowSchema>;
 const sha256 = (value: string): string =>
   `sha256:${createHash("sha256").update(value).digest("hex")}`;
 
-const splitForFamily = (
-  familyId: string,
-): "train" | "validation" | "public_test" => {
-  const byte = createHash("sha256").update(familyId).digest()[0];
-  if (byte === undefined) throw new Error("unable to hash family id");
-  if (byte < 154) return "train";
-  if (byte < 205) return "validation";
-  return "public_test";
-};
-
 const unifiedDiff = (path: string, before: string, after: string): string => {
   if (before === after) return "";
   const beforeLines = before.split("\n");
@@ -130,7 +120,7 @@ export const buildEvaluatorCases = (
   const options = exportOptionsSchema
     .omit({ outputDirectory: true })
     .parse(optionsInput);
-  const split = splitForFamily(template.familyId);
+  const split = template.split;
   const duplicateCluster = workspaceDigest(template.files);
   return materializeFamily(template, operators).map((item) => {
     const operator = operatorForCase(item, operators);
@@ -256,7 +246,7 @@ export const buildReferenceTrajectories = (
   cases: readonly EvaluatorRepairCase[],
 ): TrajectoryRow[] =>
   cases
-    .filter((item) => item.split !== "secret_holdout")
+    .filter((item) => item.split === "train" || item.split === "validation")
     .map((item) =>
       trajectoryRowSchema.parse({
         schemaVersion: "repair-trajectory-1.0",
@@ -322,67 +312,175 @@ export interface DatasetExportResult {
   outputDirectory: string;
   instanceCount: number;
   trajectoryCount: number;
+  privateEvaluationCount: number;
   manifestDigest: string;
 }
 
-export const exportRepairDataset = async (
-  template: TemplateFamily,
-  operators: readonly MutationOperator[],
+export interface CorpusFamilyInput {
+  template: TemplateFamily;
+  operators: readonly MutationOperator[];
+}
+
+interface PrivateEvaluationRow {
+  schemaVersion: "repair-evaluator-bundle-1.0";
+  case: EvaluatorRepairCase;
+  agentWorkspace: Workspace;
+}
+
+const buildPrivateEvaluationRows = (
+  family: CorpusFamilyInput,
+  options: Omit<ExportOptions, "outputDirectory">,
+): PrivateEvaluationRow[] => {
+  const evaluatorCases = buildEvaluatorCases(
+    family.template,
+    family.operators,
+    options,
+  );
+  const materialized = materializeFamily(family.template, family.operators);
+  return evaluatorCases.map((repairCase, index) => {
+    const item = materialized[index];
+    if (item === undefined || item.caseId !== repairCase.caseId) {
+      throw new Error("materialized case order differs from evaluator cases");
+    }
+    return {
+      schemaVersion: "repair-evaluator-bundle-1.0",
+      case: repairCase,
+      agentWorkspace: item.agentWorkspace,
+    };
+  });
+};
+
+const rowsForSplit = <Row extends { split: string }>(
+  rows: readonly Row[],
+  split: string,
+): Row[] => rows.filter((row) => row.split === split);
+
+const casesForSplit = (
+  rows: readonly PublicRepairCase[],
+  split: PublicRepairCase["split"],
+): PublicRepairCase[] => rowsForSplit(rows, split);
+
+const trajectoriesForSplit = (
+  rows: readonly TrajectoryRow[],
+  split: TrajectoryRow["split"],
+): TrajectoryRow[] => rowsForSplit(rows, split);
+
+export const exportRepairCorpus = async (
+  families: readonly CorpusFamilyInput[],
   optionsInput: ExportOptions,
 ): Promise<DatasetExportResult> => {
   const options = exportOptionsSchema.parse(optionsInput);
-  const evaluatorCases = buildEvaluatorCases(template, operators, {
+  if (families.length === 0) throw new Error("at least one family is required");
+  const caseOptions = {
     benchmarkVersion: options.benchmarkVersion,
     benchmarkCommit: options.benchmarkCommit,
     environmentVersion: options.environmentVersion,
     image: options.image,
     imageDigest: options.imageDigest,
-  });
+  };
+  const privateRows = families.flatMap((family) =>
+    buildPrivateEvaluationRows(family, caseOptions),
+  );
+  const evaluatorCases = privateRows.map((row) => row.case);
   const publicCases: PublicRepairCase[] = evaluatorCases.map((item) =>
     publicRepairCaseSchema.parse(toPublicRepairCase(item)),
   );
   const trajectories = buildReferenceTrajectories(evaluatorCases);
-  const mutations = buildMutationRows(operators);
+  const mutations = families.flatMap(({ operators }) =>
+    buildMutationRows(operators),
+  );
   const manifest = {
     schemaVersion: "repair-dataset-manifest-1.0",
     benchmarkVersion: options.benchmarkVersion,
     benchmarkCommit: options.benchmarkCommit,
     environmentVersion: options.environmentVersion,
     scorerVersion: "repair-scorer-1.0",
-    templateFamilyIds: [template.familyId],
+    templateFamilyIds: families.map(({ template }) => template.familyId),
     instanceCount: publicCases.length,
     trajectoryCount: trajectories.length,
+    privateEvaluationCount: privateRows.length,
+    splitCounts: {
+      trainFamilies: families.filter(
+        ({ template }) => template.split === "train",
+      ).length,
+      validationFamilies: families.filter(
+        ({ template }) => template.split === "validation",
+      ).length,
+      publicTestFamilies: families.filter(
+        ({ template }) => template.split === "public_test",
+      ).length,
+      trainInstances: casesForSplit(publicCases, "train").length,
+      validationInstances: casesForSplit(publicCases, "validation").length,
+      publicTestInstances: casesForSplit(publicCases, "public_test").length,
+    },
     files: {
-      instances: "instances.jsonl",
-      trajectories: "trajectories.jsonl",
-      mutations: "mutations.jsonl",
+      instances: {
+        train: "instances/data/train.jsonl",
+        validation: "instances/data/validation.jsonl",
+        publicTest: "instances/data/public_test.jsonl",
+      },
+      trajectories: {
+        train: "trajectories/data/train.jsonl",
+        validation: "trajectories/data/validation.jsonl",
+      },
+      mutations: "instances/mutations.jsonl",
+      privateEvaluatorBundle: "private/evaluator-cases.jsonl",
     },
   };
   const manifestJson = `${JSON.stringify(manifest, null, 2)}\n`;
-  await mkdir(options.outputDirectory, { recursive: true });
+  const instanceDirectory = join(options.outputDirectory, "instances");
+  const instanceDataDirectory = join(instanceDirectory, "data");
+  const trajectoryDirectory = join(options.outputDirectory, "trajectories");
+  const trajectoryDataDirectory = join(trajectoryDirectory, "data");
+  const privateDirectory = join(options.outputDirectory, "private");
+  await Promise.all([
+    mkdir(instanceDataDirectory, { recursive: true }),
+    mkdir(trajectoryDataDirectory, { recursive: true }),
+    mkdir(privateDirectory, { recursive: true }),
+  ]);
+  const card = datasetCard(options, publicCases.length);
   await Promise.all([
     writeFile(
-      join(options.outputDirectory, "instances.jsonl"),
-      jsonLines(publicCases),
+      join(instanceDataDirectory, "train.jsonl"),
+      jsonLines(casesForSplit(publicCases, "train")),
     ),
     writeFile(
-      join(options.outputDirectory, "trajectories.jsonl"),
-      jsonLines(trajectories),
+      join(instanceDataDirectory, "validation.jsonl"),
+      jsonLines(casesForSplit(publicCases, "validation")),
     ),
     writeFile(
-      join(options.outputDirectory, "mutations.jsonl"),
-      jsonLines(mutations),
+      join(instanceDataDirectory, "public_test.jsonl"),
+      jsonLines(casesForSplit(publicCases, "public_test")),
+    ),
+    writeFile(join(instanceDirectory, "mutations.jsonl"), jsonLines(mutations)),
+    writeFile(join(instanceDirectory, "README.md"), card),
+    writeFile(
+      join(trajectoryDataDirectory, "train.jsonl"),
+      jsonLines(trajectoriesForSplit(trajectories, "train")),
+    ),
+    writeFile(
+      join(trajectoryDataDirectory, "validation.jsonl"),
+      jsonLines(trajectoriesForSplit(trajectories, "validation")),
+    ),
+    writeFile(join(trajectoryDirectory, "README.md"), card),
+    writeFile(
+      join(privateDirectory, "evaluator-cases.jsonl"),
+      jsonLines(privateRows),
     ),
     writeFile(join(options.outputDirectory, "MANIFEST.json"), manifestJson),
-    writeFile(
-      join(options.outputDirectory, "README.md"),
-      datasetCard(options, publicCases.length),
-    ),
   ]);
   return {
     outputDirectory: options.outputDirectory,
     instanceCount: publicCases.length,
     trajectoryCount: trajectories.length,
+    privateEvaluationCount: privateRows.length,
     manifestDigest: sha256(manifestJson),
   };
 };
+
+export const exportRepairDataset = async (
+  template: TemplateFamily,
+  operators: readonly MutationOperator[],
+  optionsInput: ExportOptions,
+): Promise<DatasetExportResult> =>
+  exportRepairCorpus([{ template, operators }], optionsInput);

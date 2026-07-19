@@ -6,11 +6,8 @@ import {
   predictionDocumentSchema,
 } from "./schema.js";
 import { score } from "./scorer.js";
-import { exportRepairDataset } from "./export/dataset.js";
-import {
-  ownedDashboardMutations,
-  ownedDashboardTemplate,
-} from "./mutations/owned-dashboard.js";
+import { exportRepairCorpus } from "./export/dataset.js";
+import { ownedCorpusFamilies } from "./mutations/owned-corpus.js";
 import { repairScoringInputSchema } from "./repair/schema.js";
 import { scoreRepairEpisode } from "./repair/scorer.js";
 
@@ -74,18 +71,14 @@ program
       benchmarkVersion: string;
       environmentVersion: string;
     }) => {
-      const result = await exportRepairDataset(
-        ownedDashboardTemplate,
-        ownedDashboardMutations,
-        {
-          outputDirectory: options.out,
-          benchmarkVersion: options.benchmarkVersion,
-          benchmarkCommit: options.benchmarkCommit,
-          environmentVersion: options.environmentVersion,
-          image: options.image,
-          imageDigest: options.imageDigest,
-        },
-      );
+      const result = await exportRepairCorpus(ownedCorpusFamilies, {
+        outputDirectory: options.out,
+        benchmarkVersion: options.benchmarkVersion,
+        benchmarkCommit: options.benchmarkCommit,
+        environmentVersion: options.environmentVersion,
+        image: options.image,
+        imageDigest: options.imageDigest,
+      });
       process.stdout.write(`${JSON.stringify(result, null, 2)}\n`);
     },
   );

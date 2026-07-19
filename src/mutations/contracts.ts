@@ -5,6 +5,7 @@ export interface TemplateFamily {
   name: string;
   licenseSpdx: string;
   description: string;
+  split: "train" | "validation" | "public_test";
   files: Workspace;
 }
 

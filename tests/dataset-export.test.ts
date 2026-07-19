@@ -7,8 +7,10 @@ import { describe, expect, it } from "vitest";
 import {
   buildEvaluatorCases,
   buildReferenceTrajectories,
+  exportRepairCorpus,
   exportRepairDataset,
 } from "../src/export/dataset.js";
+import { ownedCorpusFamilies } from "../src/mutations/owned-corpus.js";
 import {
   ownedDashboardMutations,
   ownedDashboardTemplate,
@@ -70,21 +72,71 @@ describe("repair dataset export", () => {
       ownedDashboardMutations,
       { ...options, outputDirectory: directory },
     );
-    expect(result).toMatchObject({ instanceCount: 11, trajectoryCount: 11 });
+    expect(result).toMatchObject({
+      instanceCount: 11,
+      trajectoryCount: 11,
+      privateEvaluationCount: 11,
+    });
     const instances = await readFile(
-      join(directory, "instances.jsonl"),
+      join(directory, "instances/data/train.jsonl"),
       "utf8",
     );
     const trajectories = await readFile(
-      join(directory, "trajectories.jsonl"),
+      join(directory, "trajectories/data/train.jsonl"),
       "utf8",
     );
-    const card = await readFile(join(directory, "README.md"), "utf8");
+    const privateBundle = await readFile(
+      join(directory, "private/evaluator-cases.jsonl"),
+      "utf8",
+    );
+    const card = await readFile(join(directory, "instances/README.md"), "utf8");
     expect(instances.trim().split("\n")).toHaveLength(11);
     expect(trajectories.trim().split("\n")).toHaveLength(11);
     expect(instances).not.toContain("referenceRepairPatch");
     expect(instances).not.toContain("mutationPatch");
     expect(instances).not.toContain('"evaluator"');
+    expect(privateBundle).toContain("referenceRepairPatch");
+    expect(privateBundle).toContain("agentWorkspace");
     expect(card).toContain("Open Next Bench Repair Pilot");
+  });
+
+  it("exports the complete 6/2/2 corpus without public-test trajectories", async () => {
+    const directory = await mkdtemp(join(tmpdir(), "open-next-bench-corpus-"));
+    const result = await exportRepairCorpus(ownedCorpusFamilies, {
+      ...options,
+      outputDirectory: directory,
+    });
+    expect(result).toMatchObject({
+      instanceCount: 110,
+      trajectoryCount: 88,
+      privateEvaluationCount: 110,
+    });
+    const trainInstances = await readFile(
+      join(directory, "instances/data/train.jsonl"),
+      "utf8",
+    );
+    const validationInstances = await readFile(
+      join(directory, "instances/data/validation.jsonl"),
+      "utf8",
+    );
+    const publicTestInstances = await readFile(
+      join(directory, "instances/data/public_test.jsonl"),
+      "utf8",
+    );
+    const trainTrajectories = await readFile(
+      join(directory, "trajectories/data/train.jsonl"),
+      "utf8",
+    );
+    const validationTrajectories = await readFile(
+      join(directory, "trajectories/data/validation.jsonl"),
+      "utf8",
+    );
+    expect(trainInstances.trim().split("\n")).toHaveLength(66);
+    expect(validationInstances.trim().split("\n")).toHaveLength(22);
+    expect(publicTestInstances.trim().split("\n")).toHaveLength(22);
+    expect(trainTrajectories.trim().split("\n")).toHaveLength(66);
+    expect(validationTrajectories.trim().split("\n")).toHaveLength(22);
+    expect(trainTrajectories).not.toContain('"split":"public_test"');
+    expect(validationTrajectories).not.toContain('"split":"public_test"');
   });
 });
