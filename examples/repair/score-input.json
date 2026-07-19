@@ -1,0 +1,119 @@
+{
+  "case": {
+    "schemaVersion": "repair-case-1.0",
+    "caseId": "example-a11y-repair",
+    "templateFamilyId": "example-a11y",
+    "duplicateCluster": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "split": "validation",
+    "source": {
+      "repository": "https://github.com/example/template",
+      "commit": "0123456789abcdef0123456789abcdef01234567",
+      "licenseSpdx": "MIT",
+      "templatePath": null
+    },
+    "environment": {
+      "environmentVersion": "container-v1",
+      "image": "ghcr.io/riven-ai/open-next-bench-node22",
+      "imageDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "setupHash": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+      "networkAccess": false
+    },
+    "scorerVersion": "repair-scorer-1.0",
+    "task": {
+      "issueStatement": "Restore the search field's accessible name.",
+      "allowedCapabilities": [
+        "read_file",
+        "search",
+        "apply_patch",
+        "run_check"
+      ],
+      "budgets": {
+        "maxSteps": 30,
+        "maxTokens": 16000,
+        "timeoutSeconds": 900,
+        "maxOutputBytes": 100000,
+        "maxPatchBytes": 10000
+      },
+      "attemptPolicy": {
+        "attemptsPerCase": 1,
+        "terminalSubmissionsPerAttempt": 1
+      }
+    },
+    "variant": {
+      "kind": "mutated",
+      "mutations": [
+        {
+          "operatorId": "a11y-input-name",
+          "operatorVersion": "1.0.0",
+          "seed": 7331
+        }
+      ]
+    },
+    "evaluator": {
+      "mutationPatch": "mutation patch",
+      "referenceRepairPatch": "reference patch",
+      "protectedPaths": ["tests/hidden.spec.ts"],
+      "oracles": [
+        {
+          "oracleId": "hidden-a11y",
+          "kind": "hidden_bug",
+          "commandId": "check-hidden-a11y",
+          "timeoutSeconds": 60,
+          "expectedExitCode": 0
+        },
+        {
+          "oracleId": "regression-suite",
+          "kind": "regression",
+          "commandId": "check-regressions",
+          "timeoutSeconds": 120,
+          "expectedExitCode": 0
+        }
+      ],
+      "groundTruthLocations": ["app/search.tsx"]
+    }
+  },
+  "submissions": [
+    {
+      "schemaVersion": "repair-submission-1.0",
+      "caseId": "example-a11y-repair",
+      "submissionId": "example-submission",
+      "unifiedDiff": "--- a/app/search.tsx\n+++ b/app/search.tsx\n@@ -1 +1 @@\n-<input />\n+<input aria-label=\"Search\" />\n",
+      "changedPaths": ["app/search.tsx"],
+      "publicCheckIds": ["typecheck"]
+    }
+  ],
+  "evidence": {
+    "schemaVersion": "repair-verifier-evidence-1.0",
+    "caseId": "example-a11y-repair",
+    "submissionId": "example-submission",
+    "status": "completed",
+    "patchApplies": true,
+    "protectedFilesUnchanged": true,
+    "featurePreserved": true,
+    "tamperReasons": [],
+    "hiddenBugTestPassed": true,
+    "regressionSuitePassed": true,
+    "qualityScore": 1,
+    "evidenceScore": 1,
+    "efficiencyScore": 1,
+    "oracleResults": [
+      {
+        "oracleId": "hidden-a11y",
+        "kind": "hidden_bug",
+        "status": "passed",
+        "exitCode": 0,
+        "durationMs": 100,
+        "outputDigest": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+      },
+      {
+        "oracleId": "regression-suite",
+        "kind": "regression",
+        "status": "passed",
+        "exitCode": 0,
+        "durationMs": 200,
+        "outputDigest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+      }
+    ],
+    "wallTimeMs": 300
+  }
+}
