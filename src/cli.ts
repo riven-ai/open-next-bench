@@ -7,6 +7,10 @@ import {
 } from "./schema.js";
 import { score } from "./scorer.js";
 import { exportRepairCorpus } from "./export/dataset.js";
+import {
+  executableCorpusSummary,
+  materializeOwnedCorpus,
+} from "./executor/executable-cases.js";
 import { ownedCorpusFamilies } from "./mutations/owned-corpus.js";
 import { repairScoringInputSchema } from "./repair/schema.js";
 import { scoreRepairEpisode } from "./repair/scorer.js";
@@ -82,5 +86,28 @@ program
       process.stdout.write(`${JSON.stringify(result, null, 2)}\n`);
     },
   );
+
+program
+  .command("materialize-repair-corpus")
+  .description(
+    "Materialize agent workspaces and separate evaluator-private oracle bundles",
+  )
+  .requiredOption("--out <path>")
+  .option("--case <case-id>", "materialize one case instead of the full corpus")
+  .action(async (options: { out: string; case?: string }) => {
+    const bundles = await materializeOwnedCorpus(options.out, options.case);
+    process.stdout.write(
+      `${JSON.stringify(
+        {
+          outputDirectory: options.out,
+          materializedCases: bundles.length,
+          selectedCase: options.case ?? null,
+          corpus: executableCorpusSummary(),
+        },
+        null,
+        2,
+      )}\n`,
+    );
+  });
 
 await program.parseAsync();
