@@ -1,0 +1,19 @@
+{
+  "schemaVersion": "repair-conformance-1.0",
+  "scorerVersion": "repair-scorer-1.0",
+  "vectors": "vectors.json",
+  "floatingPointTolerance": 0.000001,
+  "requiredResultFields": [
+    "schemaVersion",
+    "scorerVersion",
+    "caseId",
+    "submissionId",
+    "outcome",
+    "errorCode",
+    "primaryScore",
+    "resolvedWithoutRegression",
+    "cleanControlCorrect",
+    "gates",
+    "diagnostics"
+  ]
+}

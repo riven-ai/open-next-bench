@@ -1,0 +1,497 @@
+{
+  "schemaVersion": "repair-conformance-vectors-1.0",
+  "fixtures": {
+    "mutatedCase": {
+      "schemaVersion": "repair-case-1.0",
+      "caseId": "family-a11y-mutation-1",
+      "templateFamilyId": "family-a11y",
+      "duplicateCluster": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "split": "train",
+      "source": {
+        "repository": "https://github.com/example/template",
+        "commit": "0123456789abcdef0123456789abcdef01234567",
+        "licenseSpdx": "MIT",
+        "templatePath": null
+      },
+      "environment": {
+        "environmentVersion": "container-v1",
+        "image": "ghcr.io/riven-ai/open-next-bench-node22",
+        "imageDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "setupHash": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+        "networkAccess": false
+      },
+      "scorerVersion": "repair-scorer-1.0",
+      "task": {
+        "issueStatement": "The search field has lost its accessible name. Repair it without regressions.",
+        "allowedCapabilities": [
+          "read_file",
+          "search",
+          "apply_patch",
+          "run_check"
+        ],
+        "budgets": {
+          "maxSteps": 30,
+          "maxTokens": 16000,
+          "timeoutSeconds": 900,
+          "maxOutputBytes": 100000,
+          "maxPatchBytes": 10000
+        },
+        "attemptPolicy": {
+          "attemptsPerCase": 1,
+          "terminalSubmissionsPerAttempt": 1
+        }
+      },
+      "variant": {
+        "kind": "mutated",
+        "mutations": [
+          {
+            "operatorId": "a11y-input-name",
+            "operatorVersion": "1.0.0",
+            "seed": 7331
+          }
+        ]
+      },
+      "evaluator": {
+        "mutationPatch": "mutation patch",
+        "referenceRepairPatch": "reference patch",
+        "protectedPaths": ["tests/hidden.spec.ts"],
+        "oracles": [
+          {
+            "oracleId": "hidden-a11y",
+            "kind": "hidden_bug",
+            "commandId": "check-hidden-a11y",
+            "timeoutSeconds": 60,
+            "expectedExitCode": 0
+          },
+          {
+            "oracleId": "regression-suite",
+            "kind": "regression",
+            "commandId": "check-regressions",
+            "timeoutSeconds": 120,
+            "expectedExitCode": 0
+          }
+        ],
+        "groundTruthLocations": ["app/search.tsx"]
+      }
+    },
+    "controlCase": {
+      "schemaVersion": "repair-case-1.0",
+      "caseId": "family-a11y-control",
+      "templateFamilyId": "family-a11y",
+      "duplicateCluster": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "split": "train",
+      "source": {
+        "repository": "https://github.com/example/template",
+        "commit": "0123456789abcdef0123456789abcdef01234567",
+        "licenseSpdx": "MIT",
+        "templatePath": null
+      },
+      "environment": {
+        "environmentVersion": "container-v1",
+        "image": "ghcr.io/riven-ai/open-next-bench-node22",
+        "imageDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "setupHash": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+        "networkAccess": false
+      },
+      "scorerVersion": "repair-scorer-1.0",
+      "task": {
+        "issueStatement": "Inspect the application and submit a patch only if the stated behavior is broken.",
+        "allowedCapabilities": [
+          "read_file",
+          "search",
+          "apply_patch",
+          "run_check"
+        ],
+        "budgets": {
+          "maxSteps": 30,
+          "maxTokens": 16000,
+          "timeoutSeconds": 900,
+          "maxOutputBytes": 100000,
+          "maxPatchBytes": 10000
+        },
+        "attemptPolicy": {
+          "attemptsPerCase": 1,
+          "terminalSubmissionsPerAttempt": 1
+        }
+      },
+      "variant": { "kind": "control", "mutations": [] },
+      "evaluator": {
+        "mutationPatch": "",
+        "referenceRepairPatch": "",
+        "protectedPaths": ["tests/hidden.spec.ts"],
+        "oracles": [
+          {
+            "oracleId": "hidden-a11y",
+            "kind": "hidden_bug",
+            "commandId": "check-hidden-a11y",
+            "timeoutSeconds": 60,
+            "expectedExitCode": 0
+          },
+          {
+            "oracleId": "regression-suite",
+            "kind": "regression",
+            "commandId": "check-regressions",
+            "timeoutSeconds": 120,
+            "expectedExitCode": 0
+          }
+        ],
+        "groundTruthLocations": []
+      }
+    }
+  },
+  "submissions": {
+    "repair": {
+      "schemaVersion": "repair-submission-1.0",
+      "caseId": "family-a11y-mutation-1",
+      "submissionId": "submission-1",
+      "unifiedDiff": "--- a/app/search.tsx\n+++ b/app/search.tsx\n@@ -1 +1 @@\n-<input />\n+<input aria-label=\"Search\" />\n",
+      "changedPaths": ["app/search.tsx"],
+      "publicCheckIds": ["typecheck"]
+    },
+    "controlNoEdit": {
+      "schemaVersion": "repair-submission-1.0",
+      "caseId": "family-a11y-control",
+      "submissionId": "control-submission",
+      "unifiedDiff": "",
+      "changedPaths": [],
+      "publicCheckIds": ["typecheck"]
+    },
+    "controlEdit": {
+      "schemaVersion": "repair-submission-1.0",
+      "caseId": "family-a11y-control",
+      "submissionId": "control-edit-submission",
+      "unifiedDiff": "--- a/app/page.tsx\n+++ b/app/page.tsx\n@@ -1 +1 @@\n-old\n+new\n",
+      "changedPaths": ["app/page.tsx"],
+      "publicCheckIds": []
+    }
+  },
+  "evidence": {
+    "pass": {
+      "schemaVersion": "repair-verifier-evidence-1.0",
+      "caseId": "family-a11y-mutation-1",
+      "submissionId": "submission-1",
+      "status": "completed",
+      "patchApplies": true,
+      "protectedFilesUnchanged": true,
+      "featurePreserved": true,
+      "tamperReasons": [],
+      "hiddenBugTestPassed": true,
+      "regressionSuitePassed": true,
+      "qualityScore": 1,
+      "evidenceScore": 0.8,
+      "efficiencyScore": 0.6,
+      "oracleResults": [
+        {
+          "oracleId": "hidden-a11y",
+          "kind": "hidden_bug",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 100,
+          "outputDigest": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+        },
+        {
+          "oracleId": "regression-suite",
+          "kind": "regression",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 200,
+          "outputDigest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+        }
+      ],
+      "wallTimeMs": 300
+    },
+    "hiddenFail": {
+      "schemaVersion": "repair-verifier-evidence-1.0",
+      "caseId": "family-a11y-mutation-1",
+      "submissionId": "submission-1",
+      "status": "completed",
+      "patchApplies": true,
+      "protectedFilesUnchanged": true,
+      "featurePreserved": true,
+      "tamperReasons": [],
+      "hiddenBugTestPassed": false,
+      "regressionSuitePassed": true,
+      "qualityScore": 1,
+      "evidenceScore": 1,
+      "efficiencyScore": 1,
+      "oracleResults": [
+        {
+          "oracleId": "hidden-a11y",
+          "kind": "hidden_bug",
+          "status": "failed",
+          "exitCode": 1,
+          "durationMs": 100,
+          "outputDigest": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+        },
+        {
+          "oracleId": "regression-suite",
+          "kind": "regression",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 200,
+          "outputDigest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+        }
+      ],
+      "wallTimeMs": 300
+    },
+    "regressionFail": {
+      "schemaVersion": "repair-verifier-evidence-1.0",
+      "caseId": "family-a11y-mutation-1",
+      "submissionId": "submission-1",
+      "status": "completed",
+      "patchApplies": true,
+      "protectedFilesUnchanged": true,
+      "featurePreserved": true,
+      "tamperReasons": [],
+      "hiddenBugTestPassed": true,
+      "regressionSuitePassed": false,
+      "qualityScore": 1,
+      "evidenceScore": 1,
+      "efficiencyScore": 1,
+      "oracleResults": [
+        {
+          "oracleId": "hidden-a11y",
+          "kind": "hidden_bug",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 100,
+          "outputDigest": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+        },
+        {
+          "oracleId": "regression-suite",
+          "kind": "regression",
+          "status": "failed",
+          "exitCode": 1,
+          "durationMs": 200,
+          "outputDigest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+        }
+      ],
+      "wallTimeMs": 300
+    },
+    "tamper": {
+      "schemaVersion": "repair-verifier-evidence-1.0",
+      "caseId": "family-a11y-mutation-1",
+      "submissionId": "submission-1",
+      "status": "completed",
+      "patchApplies": true,
+      "protectedFilesUnchanged": false,
+      "featurePreserved": true,
+      "tamperReasons": ["protected_file_modified"],
+      "hiddenBugTestPassed": true,
+      "regressionSuitePassed": true,
+      "qualityScore": 1,
+      "evidenceScore": 1,
+      "efficiencyScore": 1,
+      "oracleResults": [
+        {
+          "oracleId": "hidden-a11y",
+          "kind": "hidden_bug",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 100,
+          "outputDigest": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+        },
+        {
+          "oracleId": "regression-suite",
+          "kind": "regression",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 200,
+          "outputDigest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+        }
+      ],
+      "wallTimeMs": 300
+    },
+    "environmentError": {
+      "schemaVersion": "repair-verifier-evidence-1.0",
+      "caseId": "family-a11y-mutation-1",
+      "submissionId": "submission-1",
+      "status": "environment_error",
+      "patchApplies": false,
+      "protectedFilesUnchanged": true,
+      "featurePreserved": true,
+      "tamperReasons": [],
+      "hiddenBugTestPassed": false,
+      "regressionSuitePassed": false,
+      "qualityScore": 0,
+      "evidenceScore": 0,
+      "efficiencyScore": 0,
+      "oracleResults": [],
+      "wallTimeMs": 25
+    },
+    "controlPass": {
+      "schemaVersion": "repair-verifier-evidence-1.0",
+      "caseId": "family-a11y-control",
+      "submissionId": "control-submission",
+      "status": "completed",
+      "patchApplies": true,
+      "protectedFilesUnchanged": true,
+      "featurePreserved": true,
+      "tamperReasons": [],
+      "hiddenBugTestPassed": true,
+      "regressionSuitePassed": true,
+      "qualityScore": 1,
+      "evidenceScore": 1,
+      "efficiencyScore": 1,
+      "oracleResults": [
+        {
+          "oracleId": "hidden-a11y",
+          "kind": "hidden_bug",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 100,
+          "outputDigest": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+        },
+        {
+          "oracleId": "regression-suite",
+          "kind": "regression",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 200,
+          "outputDigest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+        }
+      ],
+      "wallTimeMs": 300
+    },
+    "controlEdited": {
+      "schemaVersion": "repair-verifier-evidence-1.0",
+      "caseId": "family-a11y-control",
+      "submissionId": "control-edit-submission",
+      "status": "completed",
+      "patchApplies": true,
+      "protectedFilesUnchanged": true,
+      "featurePreserved": true,
+      "tamperReasons": [],
+      "hiddenBugTestPassed": true,
+      "regressionSuitePassed": true,
+      "qualityScore": 1,
+      "evidenceScore": 1,
+      "efficiencyScore": 1,
+      "oracleResults": [
+        {
+          "oracleId": "hidden-a11y",
+          "kind": "hidden_bug",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 100,
+          "outputDigest": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+        },
+        {
+          "oracleId": "regression-suite",
+          "kind": "regression",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 200,
+          "outputDigest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+        }
+      ],
+      "wallTimeMs": 300
+    }
+  },
+  "vectors": [
+    {
+      "id": "resolved",
+      "case": "mutatedCase",
+      "submissions": ["repair"],
+      "evidence": "pass",
+      "expected": {
+        "outcome": "resolved",
+        "errorCode": null,
+        "primaryScore": 0.97,
+        "resolvedWithoutRegression": true,
+        "cleanControlCorrect": false
+      }
+    },
+    {
+      "id": "hidden-test-failed",
+      "case": "mutatedCase",
+      "submissions": ["repair"],
+      "evidence": "hiddenFail",
+      "expected": {
+        "outcome": "failed",
+        "errorCode": "hidden_test_failed",
+        "primaryScore": 0,
+        "resolvedWithoutRegression": false,
+        "cleanControlCorrect": false
+      }
+    },
+    {
+      "id": "regression-failed",
+      "case": "mutatedCase",
+      "submissions": ["repair"],
+      "evidence": "regressionFail",
+      "expected": {
+        "outcome": "partial",
+        "errorCode": "regression_failed",
+        "primaryScore": 0.2,
+        "resolvedWithoutRegression": false,
+        "cleanControlCorrect": false
+      }
+    },
+    {
+      "id": "tamper-detected",
+      "case": "mutatedCase",
+      "submissions": ["repair"],
+      "evidence": "tamper",
+      "expected": {
+        "outcome": "invalid",
+        "errorCode": "tamper_detected",
+        "primaryScore": 0,
+        "resolvedWithoutRegression": false,
+        "cleanControlCorrect": false
+      }
+    },
+    {
+      "id": "clean-control",
+      "case": "controlCase",
+      "submissions": ["controlNoEdit"],
+      "evidence": "controlPass",
+      "expected": {
+        "outcome": "clean_control",
+        "errorCode": null,
+        "primaryScore": 1,
+        "resolvedWithoutRegression": true,
+        "cleanControlCorrect": true
+      }
+    },
+    {
+      "id": "unnecessary-control-edit",
+      "case": "controlCase",
+      "submissions": ["controlEdit"],
+      "evidence": "controlEdited",
+      "expected": {
+        "outcome": "failed",
+        "errorCode": "unnecessary_control_edit",
+        "primaryScore": 0,
+        "resolvedWithoutRegression": false,
+        "cleanControlCorrect": false
+      }
+    },
+    {
+      "id": "duplicate-submission",
+      "case": "mutatedCase",
+      "submissions": ["repair", "repair"],
+      "evidence": "pass",
+      "expected": {
+        "outcome": "invalid",
+        "errorCode": "invalid_submission_count",
+        "primaryScore": 0,
+        "resolvedWithoutRegression": false,
+        "cleanControlCorrect": false
+      }
+    },
+    {
+      "id": "environment-error",
+      "case": "mutatedCase",
+      "submissions": ["repair"],
+      "evidence": "environmentError",
+      "expected": {
+        "outcome": "environment_error",
+        "errorCode": "verification_error",
+        "primaryScore": 0,
+        "resolvedWithoutRegression": false,
+        "cleanControlCorrect": false
+      }
+    }
+  ]
+}
